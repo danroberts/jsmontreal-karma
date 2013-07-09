@@ -15,6 +15,7 @@ var app = app || {};
 		el: '#todoapp',
 
 		// Our template for the line of statistics at the bottom of the app.
+		//statsTemplate: _.template($('#stats-template').html()),
 
 		// Delegated events for creating new items, and clearing completed ones.
 		events: {
@@ -27,7 +28,7 @@ var app = app || {};
 		// collection, when items are added or changed. Kick things off by
 		// loading any preexisting todos that might be saved in *localStorage*.
 		initialize: function () {
-			//this.statsTemplate = _.template($('#stats-template').html());
+			this.statsTemplate = _.template($('#stats-template').html());
 			this.allCheckbox = this.$('#toggle-all')[0];
 			this.$input = this.$('#new-todo');
 			this.$footer = this.$('#footer');
@@ -40,23 +41,22 @@ var app = app || {};
 			this.listenTo(app.todos, 'all', this.render);
 
 			app.todos.fetch();
-
 		},
 
 		// Re-rendering the App just means refreshing the statistics -- the rest
 		// of the app doesn't change.
 		render: function () {
-			//var completed = app.todos.completed().length;
-			//var remaining = app.todos.remaining().length;
+			var completed = app.todos.completed().length;
+			var remaining = app.todos.remaining().length;
 
 			if (app.todos.length) {
 				this.$main.show();
 				this.$footer.show();
 
-				// this.$footer.html(this.statsTemplate({
-				// 	completed: completed,
-				// 	remaining: remaining
-				// }));
+				this.$footer.html(this.statsTemplate({
+					completed: completed,
+					remaining: remaining
+				}));
 
 				this.$('#filters li a')
 					.removeClass('selected')
@@ -67,11 +67,11 @@ var app = app || {};
 				this.$footer.hide();
 			}
 
-			//this.allCheckbox.checked = !remaining;
+			this.allCheckbox.checked = !remaining;
 		},
 
-		//Add a single todo item to the list by creating a view for it, and
-		//appending its element to the `<ul>`.
+		// Add a single todo item to the list by creating a view for it, and
+		// appending its element to the `<ul>`.
 		addOne: function (todo) {
 			var view = new app.TodoView({ model: todo });
 			$('#todo-list').append(view.render().el);
@@ -113,8 +113,6 @@ var app = app || {};
 
 		// Clear all completed todo items, destroying their models.
 		clearCompleted: function () {
-			console.log('clearing completed')
-			console.log(app.todos.completed().length)
 			_.invoke(app.todos.completed(), 'destroy');
 			return false;
 		},

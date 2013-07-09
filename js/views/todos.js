@@ -6,12 +6,14 @@ var app = app || {};
 
 	// Todo Item View
 	// --------------
+	console.log(app.TodoView)
 	// The DOM element for a todo item...
 	app.TodoView = Backbone.View.extend({
 		//... is a list tag.
 		tagName:  'li',
 
 		// Cache the template function for a single item.
+		//template: _.template($('#item-template').html()),
 
 		// The DOM events specific to an item.
 		events: {
@@ -26,7 +28,6 @@ var app = app || {};
 		// a one-to-one correspondence between a **Todo** and a **TodoView** in this
 		// app, we set a direct reference on the model for convenience.
 		initialize: function () {
-			this.template = _.template($('#item-template').html()),
 			this.listenTo(this.model, 'change', this.render);
 			this.listenTo(this.model, 'destroy', this.remove);
 			this.listenTo(this.model, 'visible', this.toggleVisible);
@@ -34,6 +35,7 @@ var app = app || {};
 
 		// Re-render the titles of the todo item.
 		render: function () {
+			this.template =_.template($('#item-template').html());
 			this.$el.html(this.template(this.model.toJSON()));
 			this.$el.toggleClass('completed', this.model.get('completed'));
 			this.toggleVisible();
